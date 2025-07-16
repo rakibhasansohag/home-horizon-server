@@ -1258,8 +1258,8 @@ async function run() {
 				return res.status(400).send({ error: 'Offer is not accepted' });
 			}
 
-			if (typeof offer.offerAmount !== 'number') {
-				console.log('Invalid amount', offer.offerAmount);
+			const amount = Number(offer.offerAmount);
+			if (isNaN(amount) || amount <= 0) {
 				return res.status(400).send({ error: 'Invalid offer amount' });
 			}
 
@@ -1272,7 +1272,7 @@ async function run() {
 							product_data: {
 								name: `Property: ${offer.propertyTitle}`,
 							},
-							unit_amount: offer.offerAmount * 100,
+							unit_amount: amount * 100,
 						},
 						quantity: 1,
 					},
