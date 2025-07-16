@@ -22,7 +22,12 @@ admin.initializeApp({
 // Point : Middleware
 app.use(
 	cors({
-		origin: ['http://localhost:3000', 'http://localhost:5173'],
+		origin: [
+			'http://localhost:3000',
+			'http://localhost:5173',
+			process.env.BASE_URL_NETLIFY,
+			process.env.BASE_URL_SURGE,
+		],
 		credentials: true,
 	}),
 );
