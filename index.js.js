@@ -11,7 +11,10 @@ const port = process.env.PORT || 5000;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Initialize Firebase Admin
-const serviceAccount = require('./firebase-config.json');
+// Initialize Firebase Admin
+const decoded = Buffer.from(process.env.FIREBASE_KEY, 'base64').toString();
+const serviceAccount = JSON.parse(decoded);
+
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
 });

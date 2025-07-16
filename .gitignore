@@ -3,3 +3,4 @@ node_modules
 open.bat
 text.text
 firebase-config.json
+.vercel
