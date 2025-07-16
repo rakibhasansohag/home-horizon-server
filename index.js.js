@@ -1296,8 +1296,8 @@ async function run() {
 }
 run().catch(console.dir);
 
-// app.listen(port, () => {
-// 	console.log(`Home Horizon  server is running on port: ${port}`);
-// });
+app.listen(port, () => {
+	console.log(`Home Horizon  server is running on port: ${port}`);
+});
 
-module.exports = app;
+
