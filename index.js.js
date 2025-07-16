@@ -5,7 +5,7 @@ const admin = require('firebase-admin');
 const cors = require('cors');
 require('dotenv').config();
 
-const uploadRoutes = require('./routes/cloudinary');
+// const uploadRoutes = require('./routes/cloudinary');
 
 const port = process.env.PORT || 5000;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -1222,8 +1222,16 @@ async function run() {
 						},
 					],
 					mode: 'payment',
-					success_url: `http://localhost:5173/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-					cancel_url: `http://localhost:5173/payment-cancelled`,
+					success_url: `${
+						process.env.BASE_URL_SURGE ||
+						process.env.BASE_URL_NETLIFY ||
+						'localhost:5173'
+					}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+					cancel_url: `${
+						process.env.BASE_URL_SURGE ||
+						process.env.BASE_URL_NETLIFY ||
+						'localhost:5173'
+					}/payment-cancelled`,
 					metadata: {
 						offerId: offerId,
 						buyerId: offer.buyerId,
