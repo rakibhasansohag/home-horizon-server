@@ -1229,59 +1229,71 @@ async function run() {
 				const { offerId } = req.body;
 				const uid = req.decoded.uid;
 
-				if (!offerId) {
-					return res.status(400).send({ error: 'Offer ID is required' });
-				}
+			console.log('BODY:', req.body);
+			console.log('UID:', req.decoded?.uid);
 
-				const offer = await offerCollection.findOne({
-					_id: new ObjectId(offerId),
-				});
+			if (!offerId) {
+				return res.status(400).send({ error: 'Offer ID is required' });
+			}
 
-				if (offer.buyerId !== uid) {
-					return res.status(403).send({ error: 'Unauthorized access' });
-				}
+			const offer = await offerCollection.findOne({
+				_id: new ObjectId(offerId),
+			});
 
-				if (!offer || offer.status !== 'accepted') {
-					return res
-						.status(404)
-						.send({ error: 'Valid accepted offer not found' });
-				}
+			if (!offer) {
+				return res.status(404).send({ error: 'Offer not found' });
+			}
 
-				if (offer.status !== 'accepted') {
-					return res.status(400).send({ error: 'Offer is not accepted' });
-				}
+			if (offer.buyerId !== uid) {
+				return res.status(403).send({ error: 'Unauthorized access' });
+			}
 
-				const session = await stripe.checkout.sessions.create({
-					payment_method_types: ['card'],
-					line_items: [
-						{
-							price_data: {
-								currency: 'bdt',
-								product_data: {
-									name: `Property: ${offer.propertyTitle}`,
-								},
-								unit_amount: offer.offerAmount * 100,
+			if (!offer || offer.status !== 'accepted') {
+				return res
+					.status(404)
+					.send({ error: 'Valid accepted offer not found' });
+			}
+
+			if (offer.status !== 'accepted') {
+				return res.status(400).send({ error: 'Offer is not accepted' });
+			}
+
+			if (typeof offer.offerAmount !== 'number') {
+				console.log('Invalid amount', offer.offerAmount);
+				return res.status(400).send({ error: 'Invalid offer amount' });
+			}
+
+			const session = await stripe.checkout.sessions.create({
+				payment_method_types: ['card'],
+				line_items: [
+					{
+						price_data: {
+							currency: 'bdt',
+							product_data: {
+								name: `Property: ${offer.propertyTitle}`,
 							},
-							quantity: 1,
+							unit_amount: offer.offerAmount * 100,
 						},
-					],
-					mode: 'payment',
-					success_url: `${
-						process.env.BASE_URL_SURGE ||
-						process.env.BASE_URL_NETLIFY ||
-						'localhost:5173'
-					}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-					cancel_url: `${
-						process.env.BASE_URL_SURGE ||
-						process.env.BASE_URL_NETLIFY ||
-						'localhost:5173'
-					}/payment-cancelled`,
-					metadata: {
-						offerId: offerId,
-						buyerId: offer.buyerId,
-						propertyId: offer.propertyId,
+						quantity: 1,
 					},
-				});
+				],
+				mode: 'payment',
+				success_url: `${
+					process.env.BASE_URL_SURGE ||
+					process.env.BASE_URL_NETLIFY ||
+					'http://localhost:5173'
+				}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+				cancel_url: `${
+					process.env.BASE_URL_SURGE ||
+					process.env.BASE_URL_NETLIFY ||
+					'http://localhost:5173'
+				}/payment-cancelled`,
+				metadata: {
+					offerId: offerId,
+					buyerId: offer.buyerId,
+					propertyId: offer.propertyId,
+				},
+			});
 
 				res.send({ url: session.url });
 			},
