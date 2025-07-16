@@ -1279,14 +1279,10 @@ async function run() {
 				],
 				mode: 'payment',
 				success_url: `${
-					process.env.BASE_URL_SURGE ||
-					process.env.BASE_URL_NETLIFY ||
-					'http://localhost:5173'
+					process.env.BASE_URL_NETLIFY || 'http://localhost:5173'
 				}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
 				cancel_url: `${
-					process.env.BASE_URL_SURGE ||
-					process.env.BASE_URL_NETLIFY ||
-					'http://localhost:5173'
+					process.env.BASE_URL_NETLIFY || 'http://localhost:5173'
 				}/payment-cancelled`,
 				metadata: {
 					offerId: offerId,
