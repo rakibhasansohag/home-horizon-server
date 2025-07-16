@@ -112,6 +112,8 @@ const seedProperties = Array.from({ length: 20 }).map((_, index) => {
 	};
 });
 
+console.log('🚀 Express app booted on Vercel');
+
 async function run() {
 	try {
 		// await client.connect();
