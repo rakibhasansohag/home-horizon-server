@@ -5,19 +5,20 @@ const admin = require('firebase-admin');
 const cors = require('cors');
 require('dotenv').config();
 
-// const uploadRoutes = require('./routes/cloudinary');
+const uploadRoutes = require('./routes/cloudinary');
 
 const port = process.env.PORT || 5000;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Initialize Firebase Admin
-// Initialize Firebase Admin
 const decoded = Buffer.from(process.env.FIREBASE_KEY, 'base64').toString();
 const serviceAccount = JSON.parse(decoded);
 
-admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount),
-});
+if (!admin.apps.length) {
+	admin.initializeApp({
+		credential: admin.credential.cert(serviceAccount),
+	});
+}
 
 // Point : Middleware
 app.use(
