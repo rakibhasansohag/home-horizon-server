@@ -207,6 +207,44 @@ async function run() {
 			});
 		};
 
+		// Point: -------- public api's ---------
+		// get the advertised properties
+		app.get('/advertised-properties', async (req, res) => {
+			try {
+				const limit = parseInt(req.query.limit) || 4;
+
+				const properties = await propertiesCollection
+					.find({ isAdvertised: true })
+					.sort({ createdAt: -1 })
+					.limit(limit)
+					.toArray();
+
+				res.send(properties);
+			} catch (err) {
+				console.error(err);
+				res
+					.status(500)
+					.send({ message: 'Failed to fetch advertised properties' });
+			}
+		});
+		// get the latest reviews
+		app.get('/latest-reviews', async (req, res) => {
+			try {
+				const limit = parseInt(req.query.limit) || 3;
+
+				const reviews = await reviewCollection
+					.find({})
+					.sort({ createdAt: -1 })
+					.limit(limit)
+					.toArray();
+
+				res.send(reviews);
+			} catch (err) {
+				console.error(err);
+				res.status(500).send({ message: 'Failed to fetch latest reviews' });
+			}
+		});
+
 		// Point:  USERS RELATED APIS
 		// create user
 		app.post('/users', async (req, res) => {
