@@ -158,6 +158,10 @@ async function run() {
 			};
 		};
 
+		app.get('/health', (req, res) => {
+			res.send('server is healthy');
+		});
+
 		// Future use middleware
 		app.post('/jwt', async (req, res) => {
 			const { token } = req.body;
