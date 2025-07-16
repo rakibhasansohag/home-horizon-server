@@ -832,7 +832,7 @@ async function run() {
 		app.get(
 			'/wishlist',
 			verifyFireBaseToken,
-			verifyRole(['user']),
+			verifyRole(['user', 'admin', 'agent']),
 			async (req, res) => {
 				try {
 					const { userId } = req.query;
@@ -857,7 +857,7 @@ async function run() {
 		app.get(
 			'/wishlist/check',
 			verifyFireBaseToken,
-			verifyRole(['user']),
+			verifyRole(['user', 'agent', 'admin']),
 			async (req, res) => {
 				try {
 					const { userId, propertyId } = req.query;
