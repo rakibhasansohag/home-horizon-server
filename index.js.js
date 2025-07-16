@@ -1274,7 +1274,7 @@ async function run() {
 				{ _id: new ObjectId(offer.propertyId) },
 				{
 					$set: {
-						dealStatus: 'sold', // ✅ mark it as sold
+						dealStatus: 'sold',
 						updatedAt: new Date().toISOString(),
 					},
 				},
